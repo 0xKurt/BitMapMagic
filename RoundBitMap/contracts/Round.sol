@@ -7,6 +7,7 @@ contract Round {
 
     mapping(bytes32 => uint256) public projectNum;
 
+    // NO_STATUS = 0
     uint256 public constant STATUS_PENDING = 1;
     uint256 public constant STATUS_ACCEPTED = 2;
     uint256 public constant STATUS_REJECTED = 3;

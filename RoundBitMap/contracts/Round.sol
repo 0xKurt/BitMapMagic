@@ -51,7 +51,7 @@ contract Round {
         uint256 position = (index % 128) * 2;
 
         uint256 currentState = projectStates[stateIndex];
-        uint256 status = uint256((currentState >> position) & 3);
+        uint256 status = (currentState >> position) & 3;
 
         return status;
     }

@@ -22,16 +22,13 @@ contract Round {
 
         uint256 index = num - 1;
 
-        // If the current `projectStates` array can't hold another 32 project statuses,
-        // then create a new `bytes32` to hold the additional statuses.
         if (index % 128 == 0) {
             projectStates.push(0);
         }
         // Calculate the index within the `projectStates` array where the project status will be stored.
         uint256 stateIndex = index / 128;
 
-        // Calculate the position within the `bytes32` where the project status will be stored.
-        uint256 position = (index % 32) * 2;
+        uint256 position = (index % 128) * 2;
 
         // Update the project status in the `projectStates` array.
         uint256 currentState = projectStates[stateIndex];
@@ -47,8 +44,8 @@ contract Round {
 
         uint256 index = num - 1;
 
-        uint256 stateIndex = index / 32;
-        uint256 position = (index % 32) * 2;
+        uint256 stateIndex = index / 128;
+        uint256 position = (index % 128) * 2;
 
         uint256 currentState = projectStates[stateIndex];
         uint256 status = uint256((currentState >> position) & 3);

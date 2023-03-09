@@ -160,5 +160,30 @@ describe("Round", function () {
       
       expect(await round.getProjectStateLength()).to.equal(2);
      });
+
+     it("should update a project in the second slot correctly ", async function () {
+      const { round, owner, otherAccount } = await loadFixture(
+        deployRoundFixture
+      );
+
+      for (let i = 1; i <= 129; i++) {
+        const projectId = getProjectId(i.toString());
+        await round.applyToRound(projectId);
+      }
+
+      const projectId = getProjectId("129");
+
+      const currentStates = await round.projectStates(1);
+      const newStates = buildNewState(
+        currentStates.toString(),
+        [projectId],
+        [129],
+        [STATUS.ACCEPTED],
+      );
+
+      await round.setProjectStates([1], [newStates]);
+      expect(await round.getStatus(projectId)).to.equal(STATUS.ACCEPTED);
+
+     });
   });
 });

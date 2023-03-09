@@ -1,0 +1,44 @@
+Arguments: 
+  /usr/local/bin/node /home/kurt/.yarn/bin/yarn.js compile
+
+PATH: 
+  /home/kurt/.yarn/bin:/home/kurt/.config/yarn/global/node_modules/.bin:/bin/lscript:/bin/lscript:/home/kurt/software/android-studio/bin:/home/kurt/software:/home/kurt/bin:/home/kurt/bin:/home/zbr/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/opt/lampp:/opt/lampp/bin:/snap/bin:/home/kurt/.foundry/bin:/home/kurt/.local/bin
+
+Yarn version: 
+  1.22.18
+
+Node version: 
+  16.16.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/kurt/git/tmp/RoundBitMap/package.json: Unexpected token } in JSON at position 273
+      at JSON.parse (<anonymous>)
+      at /home/kurt/.yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/home/kurt/.yarn/lib/cli.js:310:30)
+      at /home/kurt/.yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "RoundBitMap",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "devDependencies": {
+      "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+      "hardhat": "^2.13.0"
+    },
+    "scripts": {
+      "test": "hardhat test",
+      "compile": "hardhat compile",
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

@@ -34,6 +34,8 @@ contract Round {
         // Update the project status in the `projectStates` array.
         uint256 currentState = projectStates[stateIndex];
         currentState &= ~(3 << position);
+
+        // Set status to pending on every application ==> re-apply
         currentState |= STATUS_PENDING << position;
 
         projectStates[stateIndex] = currentState;

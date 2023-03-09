@@ -28,16 +28,12 @@ contract Round {
         }
         // Calculate the index within the `projectStates` array where the project status will be stored.
         uint256 stateIndex = index / 128;
-
         uint256 position = (index % 128) * 2;
-
-        // Update the project status in the `projectStates` array.
         uint256 currentState = projectStates[stateIndex];
         currentState &= ~(3 << position);
 
         // Set status to pending on every application ==> re-apply
         currentState |= STATUS_PENDING << position;
-
         projectStates[stateIndex] = currentState;
     }
 

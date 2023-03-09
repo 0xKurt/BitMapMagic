@@ -5,6 +5,7 @@ const {
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+const { BigNumber } = require("ethers");
 
 const STATUS = {
   NOT_APPLIED: 0,
@@ -18,7 +19,7 @@ const getProjectId = (s) => {
   return ethers.utils.keccak256("0x" + hexString);
 };
 
-const changeStates = (currentState, projectIdArray, numArray, statusArray) => {
+const buildNewState = (currentState, projectIdArray, numArray, statusArray) => {
   let newState = BigInt(currentState);
 
   for (let i = 0; i < projectIdArray.length; i++) {
@@ -28,7 +29,7 @@ const changeStates = (currentState, projectIdArray, numArray, statusArray) => {
     newState = (newState & mask) | (BigInt(statusArray[i]) << BigInt(position));
   }
 
-  return newState;
+  return ethers.utils.hexZeroPad(BigNumber.from(newState).toHexString(), 32);
 };
 
 describe("Round", function () {
@@ -108,21 +109,15 @@ describe("Round", function () {
       const projectId2 = getProjectId("2");
       await round.applyToRound(projectId2);
 
-      await round.changeStatus(
+      const currentStates = await round.projectStates(0);
+      const newStates = buildNewState(
+        currentStates.toString(),
         [projectId, projectId2],
-        [STATUS.ACCEPTED, STATUS.REJECTED]
+        [1, 2],
+        [STATUS.ACCEPTED, STATUS.REJECTED],
       );
 
-      // wip
-      // const currentStates = await round.projectStates(0);
-      // const newStates = changeStates(
-      //   currentStates.toString(),
-      //   [projectId, projectId2],
-      //   [1, 2],
-      //   [STATUS.ACCEPTED, STATUS.REJECTED],
-      // );
-      //
-      // await round.setStates([0], [newStates]);
+      await round.setProjectStates([0], [newStates]);
 
       expect(await round.getStatus(projectId)).to.equal(STATUS.ACCEPTED);
       expect(await round.getStatus(projectId2)).to.equal(STATUS.REJECTED);
@@ -135,7 +130,16 @@ describe("Round", function () {
 
       const projectId = getProjectId("1");
       await round.applyToRound(projectId);
-      await round.changeStatus([projectId], [STATUS.ACCEPTED]);
+
+      const currentStates = await round.projectStates(0);
+      const newStates = buildNewState(
+        currentStates.toString(),
+        [projectId],
+        [1],
+        [STATUS.ACCEPTED],
+      );
+
+      await round.setProjectStates([0], [newStates]);
 
       expect(await round.getStatus(projectId)).to.equal(STATUS.ACCEPTED);
 
@@ -143,5 +147,19 @@ describe("Round", function () {
 
       expect(await round.getStatus(projectId)).to.equal(STATUS.PENDING);
     });
+
+    it("should add new state slot after 128 projects were added", async function () {
+      const { round, owner, otherAccount } = await loadFixture(
+        deployRoundFixture
+      );
+
+      for (let i = 0; i <= 128; i++) {
+        const projectId = getProjectId(i.toString());
+        await round.applyToRound(projectId);
+      }
+
+      
+      expect(await round.getProjectStateLength()).to.equal(2);
+     });
   });
 });
